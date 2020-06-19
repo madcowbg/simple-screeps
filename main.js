@@ -20,15 +20,24 @@ if (Memory.buildVersion === undefined) {
     Memory.buildVersion += 1;
 }
 
+function defineCachedProperty(object, propertyName, f) {
+    Object.defineProperty(object, propertyName, {
+        get: function () {
+            Object.defineProperty(this, propertyName, {value: f(this) })
+            return this[propertyName];
+        }
+    });
+}
+
+defineCachedProperty(Room.prototype, 'creepsByRole', (room) => _.groupBy(room.find(FIND_MY_CREEPS), (c) => c.memory.role))
+
 module.exports.loop = () => {
     console.log("build version: " + Memory.buildVersion)
-
-    var creepsByRole = _.groupBy(_.values(Game.creeps), (c) => c.memory.role)
 
     for (let spawnName in Game.spawns) {
         const spawn = Game.spawns[spawnName];
         for (let role in roles.CREEP_MIN_COUNTS) {
-            const actualLength = _.size(creepsByRole[role]);
+            const actualLength = _.size(spawn.room.creepsByRole[role]);
             if (actualLength < roles.CREEP_MIN_COUNTS[role]) {
                 spawn.createCreep([WORK, WORK, CARRY, MOVE], undefined, {role: role});
             } else {

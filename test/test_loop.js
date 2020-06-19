@@ -3,10 +3,6 @@ const expect = chai.expect
 
 var _ = require('lodash');
 
-global.Memory = {};
-
-var main = require('../main');
-
 var role = require('../role');
 
 describe('CREEP_ROLE', () => {
@@ -22,5 +18,17 @@ describe('CREEP_ROLE', () => {
         it("should have all values as funcs", () => {
             _.values(role.CREEP_ROLE_FUNCS).forEach(f => expect(f).to.be.a('function'));
         })
+    })
+})
+
+global.Memory = {};
+room_prototype = {}
+global.Room = {prototype: room_prototype}
+
+var main = require('../main');
+
+describe('main functionality', () => {
+    it("should provide a version of 0", () => {
+        expect(Memory.buildVersion).to.equal(0);
     })
 })
