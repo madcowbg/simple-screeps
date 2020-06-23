@@ -1,3 +1,5 @@
+"use strict";
+
 const chai = require('chai')
 const expect = chai.expect
 
@@ -22,10 +24,10 @@ describe('CREEP_ROLE', () => {
 })
 
 global.Memory = {};
-room_prototype = {}
+const room_prototype = {}
 global.Room = {prototype: room_prototype}
 
-var main = require('../main');
+const main = require('../main');
 
 describe('main functionality', () => {
     it("should provide a version of 0", () => {
