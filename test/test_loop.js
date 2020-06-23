@@ -1,5 +1,16 @@
 "use strict";
 
+global.Memory = {};
+function room_prototype() {}
+global.Room = room_prototype;
+
+function creep_prototype() {}
+global.Creep = creep_prototype;
+
+function spawn_prototype() {}
+global.Spawn = spawn_prototype;
+
+
 const chai = require('chai')
 const expect = chai.expect
 
@@ -22,10 +33,6 @@ describe('CREEP_ROLE', () => {
         })
     })
 })
-
-global.Memory = {};
-const room_prototype = {}
-global.Room = {prototype: room_prototype}
 
 const main = require('../main');
 

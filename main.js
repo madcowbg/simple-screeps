@@ -1,5 +1,5 @@
 'use strict';
-var roles = require('./role');
+const roles = require('./role');
 
 /*
     for (let c in Game.creeps) {
@@ -31,15 +31,6 @@ function defineCachedProperty(object, propertyName, f) {
 
 defineCachedProperty(Room.prototype, 'creepsByRole', (room) => _.groupBy(room.find(FIND_MY_CREEPS), (c) => c.memory.role))
 
-Creep.prototype.loop = function() {
-    const creepFun = roles.CREEP_ROLE_FUNCS[this.memory.role];
-    if (creepFun) { // fixme no check...
-        creepFun(this);
-    } else {
-        console.log(`undefined fun for ${this.name} of role ${this.memory.role}!`)
-        this.say("bad role!")
-    }
-}
 
 Spawn.prototype.loop = function() {
     for (let role in roles.CREEP_MIN_COUNTS) {
