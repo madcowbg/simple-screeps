@@ -31,35 +31,35 @@ function defineCachedProperty(object, propertyName, f) {
 
 defineCachedProperty(Room.prototype, 'creepsByRole', (room) => _.groupBy(room.find(FIND_MY_CREEPS), (c) => c.memory.role))
 
-function creepLoop() {
-    for (let creepName in Game.creeps) {
-        const creep = Game.creeps[creepName];
-        const creepFun = roles.CREEP_ROLE_FUNCS[creep.memory.role];
-        if (creepFun) { // fixme no check...
-            creepFun(creep);
-        } else {
-            console.log(`undefined fun for ${creep.name} of role ${creep.memory.role}!`)
-            creep.say("bad role!")
-        }
+Creep.prototype.loop = function() {
+    const creepFun = roles.CREEP_ROLE_FUNCS[this.memory.role];
+    if (creepFun) { // fixme no check...
+        creepFun(this);
+    } else {
+        console.log(`undefined fun for ${this.name} of role ${this.memory.role}!`)
+        this.say("bad role!")
     }
 }
 
-function spawnLoop() {
-    for (let spawnName in Game.spawns) {
-        const spawn = Game.spawns[spawnName];
-        for (let role in roles.CREEP_MIN_COUNTS) {
-            const actualLength = _.size(spawn.room.creepsByRole[role]);
-            if (actualLength < roles.CREEP_MIN_COUNTS[role]) {
-                spawn.createCreep([WORK, WORK, CARRY, MOVE], undefined, {role: role});
-            } else {
-                console.log(`got enough of ${role}: ${roles.CREEP_MIN_COUNTS[role]} < ${actualLength}!`);
-            }
+Spawn.prototype.loop = function() {
+    for (let role in roles.CREEP_MIN_COUNTS) {
+        const actualLength = _.size(this.room.creepsByRole[role]);
+        if (actualLength < roles.CREEP_MIN_COUNTS[role]) {
+            this.createCreep([WORK, WORK, CARRY, MOVE], undefined, {role: role});
+        } else {
+            console.log(`got enough of ${role}: ${roles.CREEP_MIN_COUNTS[role]} < ${actualLength}!`);
         }
     }
 }
 
 module.exports.loop = () => {
     console.log("build version: " + Memory.buildVersion)
-    spawnLoop();
-    creepLoop();
+
+    for (let spawnName in Game.spawns) {
+        Game.spawns[spawnName].loop();
+    }
+
+    for (let creepName in Game.creeps) {
+        Game.creeps[creepName].loop();
+    }
 }
